@@ -23,6 +23,7 @@ pub struct DebugResource {
     bg_color: Color,
     font_color: Color,
     font_size: f32,
+    is_show: bool,
 }
 
 impl Default for DebugResource {
@@ -34,6 +35,7 @@ impl Default for DebugResource {
             bg_color: Color::srgba(0.2, 0.7, 0.2, 0.2),
             font_color: Color::srgb(0.8, 0.8, 0.8),
             font_size: 20.,
+            is_show: true,
         }
     }
 }
@@ -78,6 +80,16 @@ impl DebugResource {
     pub fn set_font_size(&mut self, font_size: f32) {
         self.font_size = font_size;
     }
+
+    /// set is show debug panel
+    pub fn set_is_show(&mut self, is_show: bool) {
+        self.is_show = is_show;
+    }
+
+    /// is show debug panel
+    pub fn is_show(&self) -> bool {
+        self.is_show
+    }
 }
 
 fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>, time: Res<Time>) {
@@ -91,32 +103,34 @@ fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>,
             }
         }
 
-        // generate new root_panel
-        let mut root_panel = commands.spawn(NodeBundle {
-            style: Style {
-                width: Val::Auto,
-                height: Val::Auto,
-                flex_direction: FlexDirection::Column,
-                // justify_content: JustifyContent::SpaceBetween,
+        if debug_res.is_show {
+            // generate new root_panel
+            let mut root_panel = commands.spawn(NodeBundle {
+                style: Style {
+                    width: Val::Auto,
+                    height: Val::Auto,
+                    flex_direction: FlexDirection::Column,
+                    // justify_content: JustifyContent::SpaceBetween,
+                    ..default()
+                },
+                background_color: debug_res.bg_color.into(),
                 ..default()
-            },
-            background_color: debug_res.bg_color.into(),
-            ..default()
-        });
-        debug_res.root_panel = Some(root_panel.id());
-
-        // generate debug info
-        for (k, v) in debug_res.map.iter() {
-            root_panel.with_children(|p| {
-                p.spawn(TextBundle::from_section(
-                    format!("{}: {}", k, v),
-                    TextStyle {
-                        font_size: debug_res.font_size,
-                        color: debug_res.font_color,
-                        ..default()
-                    },
-                ));
             });
+            debug_res.root_panel = Some(root_panel.id());
+
+            // generate debug info
+            for (k, v) in debug_res.map.iter() {
+                root_panel.with_children(|p| {
+                    p.spawn(TextBundle::from_section(
+                        format!("{}: {}", k, v),
+                        TextStyle {
+                            font_size: debug_res.font_size,
+                            color: debug_res.font_color,
+                            ..default()
+                        },
+                    ));
+                });
+            }
         }
     }
 }

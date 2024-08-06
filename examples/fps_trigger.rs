@@ -8,7 +8,7 @@ fn main() {
         .add_plugins(DebugPanelPlugin)
         .add_plugins(FrameTimeDiagnosticsPlugin)
         .add_systems(Startup, setup)
-        .add_systems(Update, (trigger_fps, clear_panel))
+        .add_systems(Update, (trigger_fps, show_hide_panel))
         .run();
 }
 
@@ -17,7 +17,7 @@ fn setup(mut commands: Commands, mut debug_res: ResMut<DebugResource>) {
     commands.init_resource::<ShowFps>();
     debug_res.insert(
         "hint: ",
-        "press 'f' to trigger fps, press 'c' to remove this message",
+        "press 'f' to trigger fps, press 'h' to hide/show debug panel",
     );
 }
 
@@ -47,8 +47,9 @@ fn trigger_fps(
     }
 }
 
-fn clear_panel(mut debug_res: ResMut<DebugResource>, keyboard: Res<ButtonInput<KeyCode>>) {
-    if keyboard.just_pressed(KeyCode::KeyC) {
-        debug_res.clear();
+fn show_hide_panel(mut debug_res: ResMut<DebugResource>, keyboard: Res<ButtonInput<KeyCode>>) {
+    if keyboard.just_pressed(KeyCode::KeyH) {
+        let is_show = debug_res.is_show();
+        debug_res.set_is_show(!is_show);
     }
 }
