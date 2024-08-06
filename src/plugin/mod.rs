@@ -3,11 +3,29 @@ use std::time::Duration;
 
 use bevy::prelude::*;
 
-pub struct DebugPanelPlugin;
+/// Debug Panel Plugin
+pub struct DebugPanelPlugin {
+    /// Debug Panel update interval
+    interval: Duration,
+}
+
+impl DebugPanelPlugin {
+    pub fn new(interval: Duration) -> Self {
+        Self { interval }
+    }
+}
+
+impl Default for DebugPanelPlugin {
+    fn default() -> Self {
+        Self {
+            interval: Duration::from_millis(500),
+        }
+    }
+}
 
 impl Plugin for DebugPanelPlugin {
     fn build(&self, app: &mut App) {
-        let timer = Timer::new(Duration::from_millis(500), TimerMode::Repeating);
+        let timer = Timer::new(self.interval, TimerMode::Repeating);
         let debug_res = DebugResource { timer, ..default() };
         app.insert_resource(debug_res);
         app.add_systems(Startup, setup_root_panel);

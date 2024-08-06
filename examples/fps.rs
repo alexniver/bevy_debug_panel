@@ -1,13 +1,13 @@
+use std::time::Duration;
+
 use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy_debug_panel::prelude::*;
 
-use self::plugin::{DebugPanelPlugin, DebugResource};
-
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins)
-        .add_plugins(DebugPanelPlugin)
+        .add_plugins(DebugPanelPlugin::new(Duration::from_millis(200)))
         .add_plugins(FrameTimeDiagnosticsPlugin)
         .add_systems(Startup, setup)
         .add_systems(Update, (trigger_fps, clear_panel))
