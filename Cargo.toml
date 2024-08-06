@@ -1,0 +1,36 @@
+[package]
+name = "bevy_debug_panel"
+description = "show debug info to panel"
+documentation = ""
+version = "0.6.0"
+license = "MIT OR Apache-2.0"
+edition = "2021"
+keywords = ["gamedev", "bevy", "debug"]
+repository = "https://github.com/alexniver/bevy_debug_panel"
+readme = "README.md"
+authors = ["alexniver"]
+
+[features]
+default = ["builtin-font"]
+builtin-font = ["bevy/default_font"]
+
+[dependencies]
+bevy = { version = "0.14", default-features = false, features = [
+    "bevy_text",
+    "bevy_ui",
+    "bevy_asset",
+    "bevy_render",
+] }
+
+[dev-dependencies]
+bevy = { version = "0.14", default-features = true }
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[package.metadata.docs.rs]
+all-features = true
+rustdoc-args = ["--cfg", "docsrs"]
