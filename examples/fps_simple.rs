@@ -1,14 +1,3 @@
-# bevy_debug_panel
-
-add debug info to screen
-
-[examples](./examples/)
-
-## Quickstart
-
-simple show framerate example
-
-```rs
 use bevy::diagnostic::{DiagnosticsStore, FrameTimeDiagnosticsPlugin};
 use bevy::prelude::*;
 use bevy_debug_panel::prelude::*;
@@ -35,11 +24,3 @@ fn show_fps(diagnostics: Res<DiagnosticsStore>, mut debug_res: ResMut<DebugResou
         debug_res.insert("Fps", format!("{:.2}", value));
     }
 }
-```
-
-
-## compatible bevy versions
-
-| bevy | bevy_debug_panel |
-| ---- | ----------------------- |
-| 0.14 | 0.14                     |

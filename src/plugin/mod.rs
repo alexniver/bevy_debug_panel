@@ -4,95 +4,119 @@ use std::time::Duration;
 use bevy::prelude::*;
 
 /// Debug Panel Plugin
-pub struct DebugPanelPlugin {
-    /// Debug Panel update interval
-    interval: Duration,
-}
-
-impl DebugPanelPlugin {
-    pub fn new(interval: Duration) -> Self {
-        Self { interval }
-    }
-}
-
-impl Default for DebugPanelPlugin {
-    fn default() -> Self {
-        Self {
-            interval: Duration::from_millis(500),
-        }
-    }
-}
+/// show debug info by 'key: value'
+pub struct DebugPanelPlugin;
 
 impl Plugin for DebugPanelPlugin {
     fn build(&self, app: &mut App) {
-        let timer = Timer::new(self.interval, TimerMode::Repeating);
-        let debug_res = DebugResource { timer, ..default() };
-        app.insert_resource(debug_res);
-        app.add_systems(Startup, setup_root_panel);
+        app.init_resource::<DebugResource>();
         app.add_systems(Update, show_debug_info);
     }
 }
 
-#[derive(Debug, Resource, Default)]
+/// Deubg Resource
+#[derive(Debug, Resource)]
 pub struct DebugResource {
     root_panel: Option<Entity>,
     map: BTreeMap<String, String>,
     timer: Timer,
+    bg_color: Color,
+    font_color: Color,
+    font_size: f32,
+}
+
+impl Default for DebugResource {
+    fn default() -> Self {
+        Self {
+            root_panel: None,
+            map: BTreeMap::new(),
+            timer: Timer::new(Duration::from_millis(500), TimerMode::Repeating),
+            bg_color: Color::srgba(0.2, 0.7, 0.2, 0.2),
+            font_color: Color::srgb(0.8, 0.8, 0.8),
+            font_size: 20.,
+        }
+    }
 }
 
 impl DebugResource {
+    /// insert debug info, key <-> value
     pub fn insert<T: Into<String>, U: Into<String>>(&mut self, k: T, v: U) {
         self.map.insert(k.into(), v.into());
     }
 
+    /// remove debug info by key
     pub fn remove<T: Into<String>>(&mut self, k: T) -> Option<String> {
         self.map.remove(&k.into())
     }
 
+    /// check is contain key
     pub fn contains_key<T: Into<String>>(&self, k: T) -> bool {
         self.map.contains_key(&k.into())
     }
 
+    /// clear all debug info
     pub fn clear(&mut self) {
         self.map.clear();
     }
-}
 
-fn setup_root_panel(mut commands: Commands, mut debug_res: ResMut<DebugResource>) {
-    let entity = commands
-        .spawn(NodeBundle {
-            style: Style {
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                flex_direction: FlexDirection::Column,
-                // justify_content: JustifyContent::SpaceBetween,
-                ..default()
-            },
-            ..default()
-        })
-        .id();
-    debug_res.root_panel = Some(entity);
+    /// set timer interval
+    pub fn set_interval(&mut self, interval: Duration) {
+        self.timer.set_duration(interval);
+    }
+
+    /// set background color
+    pub fn set_bg_color(&mut self, bg_color: Color) {
+        self.bg_color = bg_color;
+    }
+
+    /// set font color
+    pub fn set_font_color(&mut self, font_color: Color) {
+        self.font_color = font_color;
+    }
+
+    /// set font size
+    pub fn set_font_size(&mut self, font_size: f32) {
+        self.font_size = font_size;
+    }
 }
 
 fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>, time: Res<Time>) {
     debug_res.timer.tick(time.delta());
 
     if debug_res.timer.finished() {
+        // remove old root_panel
         if let Some(root_panel) = debug_res.root_panel {
-            if let Some(mut root_panel) = commands.get_entity(root_panel) {
-                root_panel.despawn_descendants();
-                for (k, v) in debug_res.map.iter() {
-                    root_panel.with_children(|p| {
-                        p.spawn(TextBundle::from_section(
-                            format!("{}: {}", k, v),
-                            TextStyle {
-                                font_size: 30.0,
-                                ..default()
-                            },
-                        ));
-                    });
-                }
+            if let Some(root_panel) = commands.get_entity(root_panel) {
+                root_panel.despawn_recursive();
             }
+        }
+
+        // generate new root_panel
+        let mut root_panel = commands.spawn(NodeBundle {
+            style: Style {
+                width: Val::Auto,
+                height: Val::Auto,
+                flex_direction: FlexDirection::Column,
+                // justify_content: JustifyContent::SpaceBetween,
+                ..default()
+            },
+            background_color: debug_res.bg_color.into(),
+            ..default()
+        });
+        debug_res.root_panel = Some(root_panel.id());
+
+        // generate debug info
+        for (k, v) in debug_res.map.iter() {
+            root_panel.with_children(|p| {
+                p.spawn(TextBundle::from_section(
+                    format!("{}: {}", k, v),
+                    TextStyle {
+                        font_size: debug_res.font_size,
+                        color: debug_res.font_color,
+                        ..default()
+                    },
+                ));
+            });
         }
     }
 }
