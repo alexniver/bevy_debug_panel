@@ -41,5 +41,6 @@ fn show_fps(diagnostics: Res<DiagnosticsStore>, mut debug_res: ResMut<DebugResou
 ## compatible bevy versions
 
 | bevy | bevy_debug_panel |
-| ---- | ----------------------- |
+| ---- | ------------------------ |
 | 0.14 | 0.14                     |
+| 0.15 | 0.15                     |

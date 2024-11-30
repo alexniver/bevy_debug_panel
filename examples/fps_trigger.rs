@@ -13,7 +13,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands, mut debug_res: ResMut<DebugResource>) {
-    commands.spawn(Camera2dBundle { ..default() });
+    commands.spawn(Camera2d);
     commands.init_resource::<ShowFps>();
     debug_res.insert(
         "hint: ",

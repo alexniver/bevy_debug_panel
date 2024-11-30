@@ -13,7 +13,7 @@ fn main() {
 }
 
 fn setup(mut commands: Commands) {
-    commands.spawn(Camera2dBundle { ..default() });
+    commands.spawn(Camera2d);
 }
 
 fn show_fps(diagnostics: Res<DiagnosticsStore>, mut debug_res: ResMut<DebugResource>) {

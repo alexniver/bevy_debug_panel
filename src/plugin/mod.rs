@@ -105,29 +105,27 @@ fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>,
 
         if debug_res.is_show {
             // generate new root_panel
-            let mut root_panel = commands.spawn(NodeBundle {
-                style: Style {
+            let mut root_panel = commands.spawn((
+                Node {
                     width: Val::Auto,
                     height: Val::Auto,
                     flex_direction: FlexDirection::Column,
-                    // justify_content: JustifyContent::SpaceBetween,
                     ..default()
                 },
-                background_color: debug_res.bg_color.into(),
-                ..default()
-            });
+                BackgroundColor(debug_res.bg_color),
+            ));
             debug_res.root_panel = Some(root_panel.id());
 
             // generate debug info
             for (k, v) in debug_res.map.iter() {
                 root_panel.with_children(|p| {
-                    p.spawn(TextBundle::from_section(
-                        format!("{}: {}", k, v),
-                        TextStyle {
+                    p.spawn((
+                        Text::new(format!("{}: {}", k, v)),
+                        TextFont {
                             font_size: debug_res.font_size,
-                            color: debug_res.font_color,
                             ..default()
                         },
+                        TextColor(debug_res.font_color),
                     ));
                 });
             }
