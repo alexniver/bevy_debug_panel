@@ -7,6 +7,7 @@ fn main() {
         .add_plugins(DefaultPlugins)
         .add_plugins(DebugPanelPlugin)
         .add_plugins(FrameTimeDiagnosticsPlugin)
+        .insert_resource(ClearColor(Color::srgb(0.5, 0.5, 0.9)))
         .add_systems(Startup, setup)
         .add_systems(Update, show_fps)
         .run();

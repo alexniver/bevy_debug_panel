@@ -32,7 +32,7 @@ impl Default for DebugResource {
             root_panel: None,
             map: BTreeMap::new(),
             timer: Timer::new(Duration::from_millis(500), TimerMode::Repeating),
-            bg_color: Color::srgba(0.2, 0.7, 0.2, 0.2),
+            bg_color: Color::srgba(0.2, 0.2, 0.2, 0.9),
             font_color: Color::srgb(0.8, 0.8, 0.8),
             font_size: 20.,
             is_show: true,

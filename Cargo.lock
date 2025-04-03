@@ -498,7 +498,7 @@ dependencies = [
 
 [[package]]
 name = "bevy_debug_panel"
-version = "0.15.0"
+version = "0.15.1"
 dependencies = [
  "bevy",
 ]
