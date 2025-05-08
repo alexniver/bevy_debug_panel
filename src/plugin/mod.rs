@@ -98,8 +98,8 @@ fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>,
     if debug_res.timer.finished() {
         // remove old root_panel
         if let Some(root_panel) = debug_res.root_panel {
-            if let Some(root_panel) = commands.get_entity(root_panel) {
-                root_panel.despawn_recursive();
+            if let Ok(mut root_panel) = commands.get_entity(root_panel) {
+                root_panel.despawn();
             }
         }
 
