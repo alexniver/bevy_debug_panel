@@ -51,3 +51,6 @@ fn show_fps(diagnostics: Res<DiagnosticsStore>, mut debug_res: ResMut<DebugResou
 | ---- | ------------------------ |
 | 0.14 | 0.14                     |
 | 0.15 | 0.15                     |
+| 0.16 | 0.16                     |
+| 0.17 | None                     |
+| 0.18 | 0.18                     |

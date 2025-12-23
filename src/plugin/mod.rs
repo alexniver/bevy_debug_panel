@@ -95,7 +95,7 @@ impl DebugResource {
 fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>, time: Res<Time>) {
     debug_res.timer.tick(time.delta());
 
-    if debug_res.timer.finished() {
+    if debug_res.timer.just_finished() {
         // remove old root_panel
         if let Some(root_panel) = debug_res.root_panel {
             if let Ok(mut root_panel) = commands.get_entity(root_panel) {
