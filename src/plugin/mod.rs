@@ -24,6 +24,7 @@ pub struct DebugResource {
     font_color: Color,
     font_size: f32,
     is_show: bool,
+    z_index: i32,
 }
 
 impl Default for DebugResource {
@@ -36,6 +37,7 @@ impl Default for DebugResource {
             font_color: Color::srgb(0.8, 0.8, 0.8),
             font_size: 20.,
             is_show: true,
+            z_index: 10000,
         }
     }
 }
@@ -90,6 +92,10 @@ impl DebugResource {
     pub fn is_show(&self) -> bool {
         self.is_show
     }
+
+    pub fn set_z_index(&mut self, z_index: i32) {
+        self.z_index = z_index;
+    }
 }
 
 fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>, time: Res<Time>) {
@@ -113,6 +119,7 @@ fn show_debug_info(mut commands: Commands, mut debug_res: ResMut<DebugResource>,
                     ..default()
                 },
                 BackgroundColor(debug_res.bg_color),
+                ZIndex(debug_res.z_index),
             ));
             debug_res.root_panel = Some(root_panel.id());
 
